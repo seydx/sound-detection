@@ -8,7 +8,7 @@ Example usage would be to monitor the microphone of an IP camera used as a Baby 
 ## Installation
 
 ``` bash
-$ npm install sound-detection
+$ npm install @seydx/sound-detection
 ```
 ## Usage 
 
@@ -16,24 +16,67 @@ The ambient noise is constantly monitored and adapts over time, the `triggerLeve
 
 The decibel value is referenced against the maximum volume transmitted in a PCM stream. 
 
-### Sample App
+### Sample App 1 (HTTP)
 
 ```javascript
-var SoundDetection = require('sound-detection');
+const SoundDetection = require('@seydx/sound-detection');
 
-var options = {
-    url: 'http://babymonitorcam/audio.cgi'
-    format: {
-        bitDepth: 16,
-        numberOfChannels: 1,
-        signed: true
-    },
-    triggerLevel: 30
+const options = {
+  url: 'http://babymonitorcam/audio.cgi'
+  format: {
+    bitDepth: 16,
+    numberOfChannels: 1,
+    signed: true
+  },
+  triggerLevel: 30
 }
 
-var detector = new SoundDetection(options, function(dB) {
-    console.log('Noise Detected at %sdB', dB);
+const detector = new SoundDetection(options, (dB) => {
+  console.log('Noise Detected at %sdB', dB);
 });
 
 detector.start();
+```
+
+### Sample App 2 (FFMPEG)
+
+```javascript
+const SoundDetection = require('@seydx/sound-detection');
+
+const options = {
+  format: {
+    bitDepth: 16,
+    numberOfChannels: 1,
+    signed: true
+  },
+  triggerLevel: 30
+}
+
+const detector = new SoundDetection(options, (dB) => {
+  console.log('Noise Detected at %sdB', dB);
+});
+
+const ffmpegPath = '/usr/lib/ffmpeg';
+
+const ffmpegArguments = [
+  '-hide_banner',
+  '-loglevel',
+  'error',
+  '-rtsp_transport',
+  'tcp',
+  '-i',
+  'rtsp://admin:Samsun551991@192.168.178.166:554/11',
+  '-vn',
+  '-acodec',
+  'pcm_s16le',
+  '-f',
+  's16le',
+  'pipe:1',
+];
+
+const ffmpeg = spawn(ffmpegPath, ffmpegArguments, {
+  env: process.env,
+});
+
+ffmpeg.stdout.pipe(detector.streamDecoder);
 ```

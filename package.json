@@ -1,23 +1,36 @@
 {
-  "name": "sound-detection",
-  "version": "0.1.1",
+  "name": "@seydx/sound-detection",
+  "version": "1.0.0",
   "description": "Library to detect sudden noises above ambient from a network stream such as an IP Webcam or network microphone. ",
-  "author": "Barry John Williams <barry@bjw.me.uk>",
+  "author": "seydx",
   "readme": "README.md",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bazwilliams/sound-detection.git"
+    "url": "https://github.com/seydx/sound-detection.git"
   },
   "dependencies": {
+    "async": "3.2.3",
+    "chai": "4.3.6",
     "compute-incrmmean": "^1.0.2",
-    "compute-qmean": "^1.0.0",
-    "pcm-boilerplate": "^0.1.1",
-    "underscore": "^1.8.3"
+    "compute-qmean": "^2.0.0",
+    "underscore": "^1.13.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@babel/core": "7.18.0",
+    "@babel/eslint-parser": "7.17.0",
+    "@babel/eslint-plugin": "7.17.7",
+    "concurrently": "7.2.1",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-unicorn": "^42.0.0",
+    "prettier": "^2.6.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --fix .",
+    "prepublishOnly": "npm i --package-lock-only && npm run lint"
   },
   "keywords": [
     "babymonitor",
@@ -25,7 +38,8 @@
     "noise",
     "decibel",
     "detection",
-    "sound"
+    "sound",
+    "camera.ui"
   ],
   "license": "MIT"
 }
