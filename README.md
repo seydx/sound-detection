@@ -65,7 +65,7 @@ const ffmpegArguments = [
   '-rtsp_transport',
   'tcp',
   '-i',
-  'rtsp://admin:Samsun551991@192.168.178.166:554/11',
+  'rtsp://...',
   '-vn',
   '-acodec',
   'pcm_s16le',

@@ -1,3 +1,6 @@
+'use-strict';
+
+const { EventEmitter } = require('events');
 const http = require('http');
 const pcm = require('./libs/pcm');
 const qmean = require('compute-qmean');
@@ -12,18 +15,20 @@ const DEFAULT_OPTIONS = {
   triggerLevel: 30,
 };
 
-class NoiseDetection {
-  constructor(options, callback) {
+class NoiseDetection extends EventEmitter {
+  constructor(options) {
+    super();
+
     this.options = {
       ...DEFAULT_OPTIONS,
       ...options,
     };
 
-    this.streamDecoder = new pcm.StreamDecoder(options.format);
-    this.streamDecoder.on('readable', this.processBlock.bind(this, callback));
+    this.streamDecoder = new pcm.StreamDecoder(this.options.format);
+    this.streamDecoder.on('readable', this.processBlock.bind(this));
   }
 
-  processBlock(callback) {
+  processBlock() {
     const rmsAvg = mean(2000);
 
     const block = this.streamDecoder.read();
@@ -40,22 +45,21 @@ class NoiseDetection {
       rms = qmean(samples);
       rmsAvg(rms);
 
-      dB = (rms * 100).toFixed(2);
-      this.processDatabase(dB, callback);
+      dB = Number.parseFloat((rms * 100).toFixed(2));
+      this.processDatabase(dB);
     }
   }
 
-  processDatabase(dB, callback) {
-    if (this.options.triggerLevel && this.options.triggerLevelMax) {
-      if (dB > this.options.triggerLevel && dB < this.options.triggerLevelMax) {
-        callback(dB);
-      }
-    } else if (this.options.triggerLevel) {
-      if (dB > this.options.triggerLevel) {
-        callback(dB);
-      }
-    } else {
-      return callback;
+  processDatabase(dB) {
+    if (
+      this.options.triggerLevel &&
+      this.options.triggerLevelMax &&
+      dB > this.options.triggerLevel &&
+      dB < this.options.triggerLevelMax
+    ) {
+      this.emit('dB', dB);
+    } else if (this.options.triggerLevel && dB > this.options.triggerLevel) {
+      this.emit('dB', dB);
     }
   }
 
