@@ -31,7 +31,9 @@ const options = {
   triggerLevel: 30
 }
 
-const detector = new SoundDetection(options, (dB) => {
+const detector = new SoundDetection(options);
+
+detector.on('noise', (dB) => {
   console.log('Noise Detected at %sdB', dB);
 });
 
@@ -52,7 +54,9 @@ const options = {
   triggerLevel: 30
 }
 
-const detector = new SoundDetection(options, (dB) => {
+const detector = new SoundDetection(options);
+
+detector.on('noise', (dB) => {
   console.log('Noise Detected at %sdB', dB);
 });
 

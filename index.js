@@ -57,8 +57,10 @@ class NoiseDetection extends EventEmitter {
       dB > this.options.triggerLevel &&
       dB < this.options.triggerLevelMax
     ) {
-      this.emit('dB', dB);
+      this.emit('noise', dB);
     } else if (this.options.triggerLevel && dB > this.options.triggerLevel) {
+      this.emit('noise', dB);
+    } else {
       this.emit('dB', dB);
     }
   }
